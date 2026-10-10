@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Fraud explanation faithfulness</title>
+<meta name="description" content="Do LLM-written fraud explanations tell the truth about the model? 80 Claude explanations scored against exact model contributions.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f4f4f6;--paper:#fff;--ink:#15161b;--mute:#62646e;--line:#dadbe2;--line2:#ececf1;--acc:#4b3fd1;--acc-soft:#eceafb;--red:#b9372b;--red-soft:#f8e4e0;--green:#16794c;--green-soft:#e0f2e8;--amber:#9a6200;--amber-soft:#fcefd6;--mono:"JetBrains Mono",ui-monospace,Menlo,monospace;--sans:"Space Grotesk",system-ui,-apple-system,sans-serif}
+@media (prefers-color-scheme:dark){:root{--bg:#0e0e12;--paper:#16161c;--ink:#e9e9ef;--mute:#9a9ca8;--line:#2b2b35;--line2:#202029;--acc:#a69dff;--acc-soft:#22203f;--red:#ff8b7d;--red-soft:#3a1d19;--green:#5fd398;--green-soft:#163325;--amber:#f0b45a;--amber-soft:#36280f;color-scheme:dark}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15.5px/1.6 var(--sans);padding:28px 16px 64px;font-variant-numeric:tabular-nums}
+.wrap{max-width:900px;margin:0 auto;display:grid;gap:18px}
+.strip{display:grid;grid-template-columns:repeat(3,1fr);background:var(--paper);border:1px solid var(--line);border-radius:10px}.strip div{padding:9px 16px;border-right:1px solid var(--line)}.strip div:last-child{border-right:0}
+.lbl{font:500 11px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--mute)}.val{font-weight:500;font-size:14px}
+h1{font:700 clamp(30px,5vw,46px)/1.05 var(--sans);letter-spacing:-.025em;margin:14px 0 12px;text-wrap:balance}.lede{color:var(--mute);max-width:66ch;margin:0}
+.big{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.big div{background:var(--paper);padding:18px}.big b{display:block;font:600 44px/1 var(--mono);letter-spacing:-.03em}.big span{font-size:14px;color:var(--mute)}
+.r{color:var(--red)}.g{color:var(--green)}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;padding:14px 18px;border-bottom:1px solid var(--line)}.head h2{font:600 19px/1.3 var(--sans);margin:0}.head .no{font:500 12px var(--mono);color:var(--mute)}
+.body{padding:16px 18px}p{margin:0 0 12px;max-width:68ch}.note{font-size:13.5px;color:var(--mute)}
+.tw{overflow-x:auto}table{border-collapse:collapse;width:100%;min-width:620px;font-size:14px}
+th{font:500 11px var(--mono);letter-spacing:.05em;text-transform:uppercase;color:var(--mute);text-align:left;padding:8px 14px;border-bottom:1px solid var(--line)}td{padding:10px 14px;border-bottom:1px solid var(--line2)}tr:last-child td{border-bottom:0}.n{text-align:right;font-family:var(--mono)}
+.case{border-left:3px solid var(--red);background:var(--red-soft);padding:12px 16px;border-radius:0 8px 8px 0;font-size:14.5px}
+.case code{font:13px var(--mono)}
+.bars{display:grid;gap:8px}.bar{display:grid;grid-template-columns:200px 1fr 60px;gap:10px;align-items:center;font:13px var(--mono)}.bar .t{height:12px;background:var(--line2);border-radius:3px;overflow:hidden}.bar .t i{display:block;height:100%}
+.got{border-color:var(--amber)}.got .head{background:var(--amber-soft)}.got .head h2{color:var(--amber)}
+pre{font:12.5px/1.6 var(--mono);background:var(--line2);padding:12px 14px;border-radius:8px;overflow-x:auto;margin:0}
+footer{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:13px;color:var(--mute)}a{color:var(--acc)}
+@media (max-width:620px){.strip,.big{grid-template-columns:1fr}.strip div{border-right:0;border-bottom:1px solid var(--line)}.bar{grid-template-columns:1fr 50px}.bar .t{grid-column:1/-1;order:3}}
+</style></head><body><div class="wrap">
+<div class="strip"><div><div class="lbl">Role</div><div class="val">Data Scientist II, Fraud &amp; Risk</div></div><div><div class="lbl">Company</div><div class="val">Socure</div></div><div><div class="lbl">Candidate</div><div class="val">Syed Ahmed Basharat Ali</div></div></div>
+<header><h1>Does the fraud explanation tell the truth about the model?</h1>
+<p class="lede">30,000 synthetic identity applications, a linear fraud model (AUC about 0.95) whose real top-3 reasons are known exactly, and 80 analyst-facing explanations written by Claude for 40 flagged applications under two prompts.</p></header>
+<section class="big"><div><span>open prompt: explanations citing a reason the model held against fraud or ignored</span><b class="r">16 / 40</b></div><div><span>grounded in the model's top 3</span><b class="g">0 / 40</b></div></section>
+<section class="card"><div class="head"><h2>Every cited reason, scored against the model</h2><span class="no">240 open · 120 grounded</span></div>
+<div class="tw"><table><thead><tr><th>Prompt</th><th class="n">Model's top 3</th><th class="n">Real but minor</th><th class="n">Held against fraud / ignored</th></tr></thead><tbody>
+<tr><td>Open: sees data and score</td><td class="n">111</td><td class="n">107</td><td class="n r">22</td></tr>
+<tr><td>Grounded: given the top 3, told to use only those</td><td class="n">120</td><td class="n">0</td><td class="n g">0</td></tr>
+</tbody></table></div>
+<div class="body"><div class="case">Model's top reasons: <code>ssn_prefix_reuse</code>, <code>email_age</code>, <code>device_shared_apps</code>. The open explanation also blamed the phone, whose long tenure was actually pulling the score <b>down</b> (contribution −0.92).</div></div></section>
+<section class="card"><div class="head"><h2>Why open explanations drift</h2><span class="no">standardized model weights</span></div><div class="body">
+<div class="bars">
+<div class="bar"><span>phone_tenure_days</span><span class="t"><i style="width:100%;background:var(--acc)"></i></span><span>−1.14</span></div>
+<div class="bar"><span>email_age_days</span><span class="t"><i style="width:91%;background:var(--acc)"></i></span><span>−1.04</span></div>
+<div class="bar"><span>device_shared_apps</span><span class="t"><i style="width:85%;background:var(--acc)"></i></span><span>0.97</span></div>
+<div class="bar"><span>address_velocity</span><span class="t"><i style="width:79%;background:var(--acc)"></i></span><span>0.90</span></div>
+<div class="bar"><span>ssn_prefix_reuse_x</span><span class="t"><i style="width:56%;background:var(--acc)"></i></span><span>0.64</span></div>
+<div class="bar"><span>phone_is_voip</span><span class="t"><i style="width:39%;background:var(--red)"></i></span><span>0.44</span></div>
+<div class="bar"><span>ip_distance_km</span><span class="t"><i style="width:25%;background:var(--red)"></i></span><span>0.29</span></div>
+<div class="bar"><span>name_email_mismatch</span><span class="t"><i style="width:25%;background:var(--red)"></i></span><span>0.28</span></div>
+</div>
+<p class="note" style="margin:12px 0 0">The fields that look suspicious to a person (red) matter least to the model. An explanation written from the data alone reaches for them anyway.</p></div></section>
+<section class="card got"><div class="head"><h2>The part I got wrong</h2></div><div class="body"><p style="margin:0">My first scoring counted every reason outside the model's top 3 as unfaithful: 40 of 40 explanations wrong, 129 of 240 reasons invented. Too harsh, since 107 were real, smaller contributions. Splitting "real but minor" from "held against fraud" gave the honest number, 16 of 40. A keyword scan also flagged 8 grounded explanations, all false alarms: "email address" matched my address-velocity pattern.</p></div></section>
+<section class="card"><div class="head"><h2>Run it</h2><span class="no">stdlib only</span></div><div class="body"><pre>python3 explain_eval.py          # scores the 80 cached explanations
+python3 explain_eval.py --ask    # asks Claude again</pre></div></section>
+<footer><span>Synthetic data, fixed seed. No real person, SSN or customer.</span><span>Syed Ahmed Basharat Ali · sabasharat.ali@gmail.com · <a href="https://basharat.net">basharat.net</a> · <a href="https://github.com/sa-basharat-ali/fraud-explanation-faithfulness">source</a></span></footer>
+</div></body></html>
